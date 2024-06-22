@@ -1,0 +1,34 @@
+---
+- name: setting up httpd service
+  hosts: all
+  become: yes
+  tasks:
+   - name: install git
+     yum:
+      name: git
+      state: present
+   - name: install httpd
+     yum:
+      name: httpd
+      state: present
+   - name: start httpd service
+     service:
+      name: httpd
+      state: started
+     tags: start_httpd
+
+   - name:  service status of httpd
+     shell: service httpd status
+     register: http_service
+     tags: start_httpd
+   - name: display service status output
+     debug:
+      var: http_service
+     tags: start_httpd
+   - name: deploy index.html
+     copy:
+      src: /opt/index.html
+      dest: /var/www/html/index.html
+     tags: copy_code      
+
+
